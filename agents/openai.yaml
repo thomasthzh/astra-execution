@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astra 分层执行"
+  short_description: "按依赖分派多代理任务，以隔离写入、独立集成和按需升级降低协调成本"
+  default_prompt: "使用 $astra-execution 推进当前目标，选择合适的并行规模，持续执行到验收通过，并汇报关键决策与验证证据。"
