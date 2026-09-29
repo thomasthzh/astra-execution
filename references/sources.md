@@ -31,6 +31,19 @@
 - [Build skills](https://learn.chatgpt.com/docs/build-skills)：技能以 SKILL.md 和按需资源组织，可显式/隐式发现；因此本包保持短入口、按阶段读参考文件。
 - [Rethinking skills and prompts for GPT-6 Astra](https://learn.chatgpt.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra)，2026-09-11：强调精确触发、按需披露和减少过度规定。本 skill 保留并发/验收不变量，让具体实现依任务选择。
 
+## 验证循环与协作的证据边界
+
+以下原始研究已于 2026-09-29 核读，用于校准 [verification.md](verification.md) 与模型路由。它们没有证明 GPT-6 Sol 加循环必然达到 Astra 水平；基准通过也不代表真实部署成功。
+
+| 一手来源 | 观察与采纳 | 边界 |
+| --- | --- | --- |
+| [Agentless](https://arxiv.org/html/2407.01489v2)，§5.2.3 | GPT-4o 在 SWE-bench Lite 的补丁选择，从多数投票 77/300 到回归与复现测试 96/300；用实际检查筛选产物 | 补丁筛选消融，不是 Sol 迭代实验；生成测试本身也会错 |
+| [Reflexion](https://arxiv.org/html/2303.11366)，§4.3 | GPT-4 的 50 道困难 Rust 题：基线 60%，无测试的反思 52%，测试加反思 68%；要求诊断依据而非空泛反思 | 其他任务出现退步，不能保证增加轮次有效 |
+| [EvalPlus](https://arxiv.org/html/2305.01210) | 扩展 HumanEval 测试发现漏检并改变部分模型排名；验收检查须覆盖真实行为 | 原有测试全绿不足以证明一般正确性 |
+| [Scaling Agent Systems](https://arxiv.org/html/2512.08296v3) | 控制工具、提示与计算预算后，多代理收益随任务结构变化；优先可独立验收的并行工作 | SWE-bench 部分样本较小；不将拓扑或模型差异换算成本机产能 |
+
+采纳的是验收质量、失败反馈、版本证据与总成本口径；不把论文轮数、代理数或成功率固化为本 skill 默认值。
+
 ## 由截图到最终协议
 
 自部署 GitLab 的官方来源与能力边界集中在 [git-forges.md](git-forges.md)：保留实例/API 基址、嵌套 namespace、项目 ID 与 iid；区分普通/合成 Pipeline；按实际版本和套餐处理审批、自动合并与 merge train。此项为用户明确要求的适配，不是从截图推导的默认平台。

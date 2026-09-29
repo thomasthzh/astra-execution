@@ -24,8 +24,15 @@ flowchart TD
 - 通过任务包传递必要上下文，长日志和证据按需读取。
 - 独立 worktree 隔离文件；共享端口、数据库、Git 操作另行协调。
 - 检查对应实际交付版本，旧提交的绿色结果不能覆盖新版本。
+- 执行验收检查，将具体失败交回负责人修复，重验受影响部分；硬门槛通过后再比较成本和时间。
 - 遇到重复失败，带证据换策略或升级；不无限重试。
 - 简单修改直接执行，大任务才增加协调与集成角色。
+
+## 验证循环
+
+把需求中的可观察行为对应到现有测试或验收方式，再执行“实现 → 检查 → 分类诊断 → 修复 → 重验”。记录实际被测版本与证据；测试缺陷、环境故障和规格缺失分别处理，避免反复修改无关代码。最终集成版本仍需满足项目要求的检查。
+
+具体协议见 [verification.md](references/verification.md)。它提供按需使用的记录示例与升级规则，不附带通用测试运行器，也不会自动创建 CI 或后台服务。优先复用项目已有检查，短任务无需新建流水线或独立账本。
 
 ## 安装
 
@@ -86,14 +93,17 @@ flowchart TD
 | [SKILL.md](SKILL.md) | 入口、角色、调度、升级与收尾 |
 | [runtime.md](references/runtime.md) | 模型/槽位、worktree、持久状态和后台边界 |
 | [contracts.md](references/contracts.md) | 账本、任务包、验收交接和决策模板 |
+| [verification.md](references/verification.md) | 验收质量、反馈修复、失败分类和证据记录 |
 | [integration.md](references/integration.md) | 审查、顺序集成与交付 |
 | [git-forges.md](references/git-forges.md) | GitHub 与自部署 GitLab |
-| [sources.md](references/sources.md) | 12 类方案、一手来源与设计取舍 |
+| [sources.md](references/sources.md) | 编排方案、验证循环研究与设计取舍 |
 
 ## 依据与验证范围
 
 参考 Agent Orchestrator、Gas Town、Symphony、Claude Squad、Xum、Vibe Kanban、Claude Agent Teams、Superpowers、Spec Kit、OpenHands、LangGraph 和 Beads，并核查 OpenAI/GitLab 官方文档。来源和维护状态记录于 [sources.md](references/sources.md)，核查日期为 2026-09-29。
 
-技能已通过结构、UTF-8、相对引用与 UI 元数据检查，并进行两轮独立前向验证，覆盖五个本地模拟场景：共享目录依赖与过期测试、单点修改、GitLab 子路径/分页/创建超时、合并时提交变化、合成 Pipeline。单点场景实际修改并核对了隔离样例；远端操作均为模拟。
+此前版本已通过结构、UTF-8、相对引用与 UI 元数据检查，并进行两轮独立前向验证，覆盖五个本地模拟场景：共享目录依赖与过期测试、单点修改、GitLab 子路径/分页/创建超时、合并时提交变化、合成 Pipeline。单点场景实际修改并核对了隔离样例；远端操作均为模拟。
+
+本次验证循环更新通过技能校验器、UTF-8、相对引用、JSONL 示例和 UI 元数据检查，并完成独立的三组只读情景检验：简单拼写修改、未提交增量与测试数据库故障、依赖阻塞/并发满额/重复失败与成本归因。情景检验核对决策和交接，未替代真实项目运行或模型效果基准。
 
 尚未对真实自部署 GitLab 做端到端联调，也没有实测模型费用或吞吐收益。模型分工是可用时的建议，具体取决于宿主能力；本 skill 不会切换主会话模型、创建后台服务或自动取得发布权限。
